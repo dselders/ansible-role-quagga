@@ -2,3 +2,4 @@
 *.retry
 .vagrant
 .molecule
+.pytest_cache
