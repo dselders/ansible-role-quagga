@@ -1,2 +1,38 @@
 ---
-# tasks file for dselders.quagga
+- name: Install Quagga package
+  become: "True"
+  package:
+    name: quagga
+    state: present
+
+- name: Remove zebra=no in daemons file
+  become: "True"
+  lineinfile:
+    path: /etc/quagga/daemons
+    regexp: '^zebra=no\s+'
+    state: absent
+
+- name: Enable zebra daemon
+  become: "True"
+  lineinfile:
+    path: /etc/quagga/daemons
+    line: 'zebra=yes'
+    insertbefore: '^bgpd=no|bgpd=yes'
+    state: present
+
+- name: Remove ospfd=no in daemons file
+  become: "True"
+  lineinfile:
+    path: /etc/quagga/daemons
+    regexp: '^ospfd=no\s+'
+    state: absent
+  when: quagga_ospfd_enabled
+
+- name: Enable ospfd daemon
+  become: "True"
+  lineinfile:
+    path: /etc/quagga/daemons
+    line: 'ospfd=yes'
+    insertafter: '^bgpd=no|bgpd=yes'
+    state: present
+  when: quagga_ospfd_enabled
