@@ -69,3 +69,10 @@ def test_ospfd_eth1_bw_is_set(host):
     eth1_bw = host.run("vtysh -c 'sh int eth1' | grep bandwidth")
 
     assert eth1_bw.stdout == "  bandwidth 1000000 kbps"
+
+
+def test_ospfd_hello_timer_is_set(host):
+    hello_timer = host.run("vtysh -c 'sh ip ospf int eth1' |\
+            grep 'Timer intervals configured' | awk -F, '{print $2}'")
+
+    assert hello_timer.stdout == " Hello 5s"
