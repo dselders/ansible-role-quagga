@@ -27,8 +27,10 @@ Only the zebdra daemon is eanbled by default within the role.  To enable ospfd s
         interfaces:
             - name: eth0
               passive: "True"
+            - name: eth1
+              bandwidth: 100000
 
-The `quagga_ospfd` hash will contain the information needed configure OSPF on a host.  The `router_id` is the OSPF router-id for the host.  The `networks` key contains a list of `prefix` and `area` that will be advertised via OSPF.  The interfaces matching the given prefix will have OSPF enabled on them.  OSPF will send out hello packets and form neighbor relationships over these interfaces.  The `interfaces` key contains optional config items in a list.  The `name` is required to set either `passive` or `cost`.  The `passive` key is not required and is to allow the setting of an interface as passive.
+The `quagga_ospfd` hash will contain the information needed configure OSPF on a host.  The `router_id` is the OSPF router-id for the host.  The `networks` key contains a list of `prefix` and `area` that will be advertised via OSPF.  The interfaces matching the given prefix will have OSPF enabled on them.  OSPF will send out hello packets and form neighbor relationships over these interfaces.  The `interfaces` key contains optional config items in a list.  The `name` is required to set either `passive` or `cost`.  The `passive` key is not required and is to allow the setting of an interface as passive.  The `bandwidth` key allows for correcting interface bandwidth, in order to have an accurate OSPF cost calculation.  This number is the interface bandwidth in kilobits per second.
 
 ## Dependencies
 
