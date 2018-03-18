@@ -41,6 +41,7 @@ provisioner:
               passive: "True"
             - name: eth1
               bandwidth: 1000000
+              hello_timer: 5
   lint:
     name: ansible-lint
 scenario:

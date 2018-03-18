@@ -5,6 +5,15 @@
 !
 hostname {{ inventory_hostname }}
 !
+{% if quagga_ospf.interfaces is defined %}
+{% for interface in quagga_ospf.interfaces %}
+interface {{ interface.name }}
+{% if interface.hello_timer is defined %}
+  ip ospf hello-interval {{ interface.hello_timer }}
+{% endif %}
+{% endfor %}
+{% endif %}
+!
 {% if quagga_ospf is defined %}
 router ospf
   log-adjacency-changes detail
