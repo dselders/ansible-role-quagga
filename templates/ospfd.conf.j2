@@ -1,0 +1,28 @@
+#jinja2:lstrip_blocks: True
+! /etc/quagga/ospfd.conf
+!
+! {{ ansible_managed }}
+!
+hostname {{ inventory_hostname }}
+!
+{% if quagga_ospf is defined %}
+router ospf
+  log-adjacency-changes detail
+  auto-cost reference-bandwidth {{ quagga_ospf_reference_bw }}
+  ospf router-id {{ quagga_ospf.router_id }}
+  {% for network in quagga_ospf.networks %}
+  network {{ network.prefix }} area {{ network.area }}
+  {% endfor %}
+  {% if quagga_ospf.passive_intfs is defined %}
+  {% for interface in quagga_ospf.interfaces %}
+  {% if interface.passive == "True" %}
+  passive-interface {{ interface.name }}
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+{% endif %}
+!
+log file {{ quagga_ospfd_log }}
+log timestamp precision {{ quagga_ospfd_log_precision }}
+!
+line vty

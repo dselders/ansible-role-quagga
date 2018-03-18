@@ -1,0 +1,12 @@
+#jinja2:lstrip_blocks: True
+! /etc/quagga/zebra.conf
+!
+! {{ ansible_managed }}
+!
+hostname {{ inventory_hostname }}
+!
+log file {{ quagga_zebra_log }}
+log timestamp precision {{ quagga_zebra_log_precision }}
+!
+line vty
+password {{ quagga_vtysh_password }}

@@ -19,6 +19,17 @@
     line: 'zebra=yes'
     insertbefore: '^bgpd=no|bgpd=yes'
     state: present
+  notify: Restart quagga
+
+- name: zebra.conf
+  become: "True"
+  template:
+    src: zebra.conf.j2
+    dest: /etc/quagga/zebra.conf
+    owner: quagga
+    group: quagga
+    mode: 0640
+  notify: Restart quagga
 
 - name: Remove ospfd=no in daemons file
   become: "True"
@@ -36,3 +47,14 @@
     insertafter: '^bgpd=no|bgpd=yes'
     state: present
   when: quagga_ospfd_enabled
+  notify: Restart quagga
+
+- name: ospfd.conf
+  become: "True"
+  template:
+    src: ospfd.conf.j2
+    dest: /etc/quagga/ospfd.conf
+    owner: quagga
+    group: quagga
+    mode: 0640
+  notify: Restart quagga

@@ -1,2 +1,10 @@
 ---
+quagga_vtysh_password: zebra
+quagga_zebra_log: /var/log/quagga/zebra.log
+quagga_zebra_log_precision: 0
+
 quagga_ospfd_enabled: "False"
+quagga_ospfd_log: /var/log/quagga/ospfd.log
+quagga_ospfd_log_precision: 0
+
+quagga_ospf_reference_bw: 100
