@@ -26,3 +26,22 @@ def test_ospfd_is_enabled(host):
 
     assert daemons.is_file
     assert daemons.contains("^ospfd=yes$")
+
+
+def test_quagga_is_running(host):
+    quagga = host.service("quagga")
+
+    assert quagga.is_running
+    assert quagga.is_enabled
+
+
+def test_zebra_is_listening(host):
+    zebra_socket = host.socket("tcp://127.0.0.1:2601")
+
+    assert zebra_socket.is_listening
+
+
+def test_ospfd_is_listening(host):
+    ospfd_socket = host.socket("tcp://127.0.0.1:2604")
+
+    assert ospfd_socket.is_listening

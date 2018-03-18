@@ -22,7 +22,23 @@ provisioner:
   inventory:
     group_vars:
       ospf:
+        quagga_vtysh_password: blah
+        quagga_zebra_log_precision: 6
         quagga_ospfd_enabled: "True"
+        quagga_ospfd_reference_bw: 100000
+        quagga_ospfd_log_precision: 6
+    host_vars:
+      r1:
+        quagga_ospf:
+          router_id: 1.1.1.1
+          networks:
+            - prefix: 192.168.29.0/24
+              area: 0
+            - prefix: 1.1.1.1/32
+              area: 0
+          interfaces:
+            - name: lo0
+              passive: "True"
   lint:
     name: ansible-lint
 scenario:
