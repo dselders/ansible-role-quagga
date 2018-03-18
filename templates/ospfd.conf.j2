@@ -13,9 +13,9 @@ router ospf
   {% for network in quagga_ospf.networks %}
   network {{ network.prefix }} area {{ network.area }}
   {% endfor %}
-  {% if quagga_ospf.passive_intfs is defined %}
+  {% if quagga_ospf.interfaces is defined %}
   {% for interface in quagga_ospf.interfaces %}
-  {% if interface.passive == "True" %}
+  {% if interface.passive is defined and interface.passive == "True" %}
   passive-interface {{ interface.name }}
   {% endif %}
   {% endfor %}
