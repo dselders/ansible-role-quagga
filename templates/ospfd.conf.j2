@@ -7,9 +7,13 @@ hostname {{ inventory_hostname }}
 !
 {% if quagga_ospf.interfaces is defined %}
 {% for interface in quagga_ospf.interfaces %}
+!
 interface {{ interface.name }}
 {% if interface.hello_timer is defined %}
   ip ospf hello-interval {{ interface.hello_timer }}
+{% endif %}
+{% if interface.dead_timer is defined %}
+  ip ospf dead-interval {{ interface.dead_timer }}
 {% endif %}
 {% endfor %}
 {% endif %}

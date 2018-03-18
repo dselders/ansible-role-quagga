@@ -42,6 +42,7 @@ provisioner:
             - name: eth1
               bandwidth: 1000000
               hello_timer: 5
+              dead_timer: 20
   lint:
     name: ansible-lint
 scenario:

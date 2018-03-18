@@ -76,3 +76,10 @@ def test_ospfd_hello_timer_is_set(host):
             grep 'Timer intervals configured' | awk -F, '{print $2}'")
 
     assert hello_timer.stdout == " Hello 5s"
+
+
+def test_ospfd_dead_timer_is_set(host):
+    dead_timer = host.run("vtysh -c 'sh ip ospf int eth1' |\
+            grep 'Timer intervals configured' | awk -F, '{print $3}'")
+
+    assert dead_timer.stdout == " Dead 20s"
