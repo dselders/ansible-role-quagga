@@ -83,3 +83,10 @@ def test_ospfd_dead_timer_is_set(host):
             grep 'Timer intervals configured' | awk -F, '{print $3}'")
 
     assert dead_timer.stdout == " Dead 20s"
+
+
+def test_osfpd_default_information_originate_is_set(host):
+    default_information = host.run("vtysh -c 'sh run' |\
+            grep 'default-information originate'")
+
+    assert default_information.stdout == ' default-information originate'
