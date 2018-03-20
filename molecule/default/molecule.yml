@@ -31,6 +31,7 @@ provisioner:
       r1:
         quagga_ospf:
           router_id: 1.1.1.1
+          originate_default: true
           networks:
             - prefix: 192.168.29.0/24
               area: 0
