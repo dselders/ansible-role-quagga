@@ -55,6 +55,14 @@ None
       roles:
         - { role: dselders.quagga }
 
+## Testing
+
+This role has been developed using [molecule](https://molecule.readthedocs.io/en/latest/) to drive testing.  To run the default scenario:
+
+        molecule test
+
+When this is run molecule will lint, syntax check, apply the role, check for idempotence, and finally verify that all tests pass.  The tests can be found int `molecule/default/tests`.  Molecule does allow for lint, syntax checking, applying the role, and verifying individually as well.
+
 ## License
 
 BSD
