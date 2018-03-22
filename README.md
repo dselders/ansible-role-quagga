@@ -21,24 +21,6 @@ quagga_ospfd_reference_bw: 100
 
 Only the zebdra daemon is eanbled by default within the role.  To enable ospfd set `quagga_osfpd_enabled` to `True`.  The default logging locations can be overriden.  The default precision for both zebra and ospfd is set to the quagga default.  The OSPF reference bandwidth is configured to the default of 100mbit.
 
-<<<<<<< HEAD
-    quagga_ospfd:
-      router_id: 192.168.29.1
-      originate_default: true
-      networks:
-        - prefix: 192.168.29.0/24
-          area: 0
-      interfaces:
-        - name: eth0
-          passive: "True"
-        - name: eth1
-          bandwidth: 100000
-          hello_timer: 5
-          dead_timer: 20
-          auth:
-            - key_id: 1
-              md5_key: "Quagga_OSPF"
-=======
 ```yaml
 quagga_ospfd:
   router_id: 192.168.29.1
@@ -53,8 +35,10 @@ quagga_ospfd:
       bandwidth: 100000
       hello_timer: 5
       dead_timer: 20
+      auth:
+        - key_id: 1
+          md5_key: "Quagga_OSPF"
 ```
->>>>>>> develop
 
 The `quagga_ospfd` hash will contain the information needed configure OSPF on a host.  The `router_id` is the OSPF router-id for the host.  Optionally OSPF can originate a default route.  When `originate_default` is defined a default will be originated.  If you want a default even if there is no default in the route table you may set `originate_default` to always.
 
