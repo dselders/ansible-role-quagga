@@ -35,6 +35,7 @@ quagga_ospfd:
       bandwidth: 100000
       hello_timer: 5
       dead_timer: 20
+      md5_auth
       auth:
         - key_id: 1
           md5_key: "Quagga_OSPF"
