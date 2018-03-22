@@ -10,28 +10,32 @@ None
 
 Available variables are listed below, with their default values (see `defaults/main.yml`)
 
-    quagga_vtysh_password: zebra
-    quagga_zebra_log: /var/log/quagga/zebra.log
-    quagga_ospfd_log: /var/log/quagga/ospfd.log
-    quagga_ospfd_log_precision: 0
-    quagga_ospfd_enabled: "False"
-    quagga_ospfd_reference_bw: 100
+```yaml
+quagga_vtysh_password: zebra
+quagga_zebra_log: /var/log/quagga/zebra.log
+quagga_ospfd_log: /var/log/quagga/ospfd.log
+quagga_ospfd_log_precision: 0
+quagga_ospfd_enabled: "False"
+quagga_ospfd_reference_bw: 100
+```
 
 Only the zebdra daemon is eanbled by default within the role.  To enable ospfd set `quagga_osfpd_enabled` to `True`.  The default logging locations can be overriden.  The default precision for both zebra and ospfd is set to the quagga default.  The OSPF reference bandwidth is configured to the default of 100mbit.
 
-    quagga_ospfd:
-      router_id: 192.168.29.1
-      originate_default: true
-      networks:
-        - prefix: 192.168.29.0/24
-          area: 0
-      interfaces:
-        - name: eth0
-          passive: "True"
-        - name: eth1
-          bandwidth: 100000
-          hello_timer: 5
-          dead_timer: 20
+```yaml
+quagga_ospfd:
+  router_id: 192.168.29.1
+  originate_default: true
+  networks:
+    - prefix: 192.168.29.0/24
+      area: 0
+  interfaces:
+    - name: eth0
+      passive: "True"
+    - name: eth1
+      bandwidth: 100000
+      hello_timer: 5
+      dead_timer: 20
+```
 
 The `quagga_ospfd` hash will contain the information needed configure OSPF on a host.  The `router_id` is the OSPF router-id for the host.  Optionally OSPF can originate a default route.  When `originate_default` is defined a default will be originated.  If you want a default even if there is no default in the route table you may set `originate_default` to always.
 
@@ -45,15 +49,17 @@ None
 
 ## Example Playbook
 
-    - hosts: ospf-routers
-      vars:
-        quagga_ospfd:
-          router_id: 1.1.1.1
-          networks:
-            - prefix: 192.168.29.0/24
-              area: 0
-      roles:
-        - { role: dselders.quagga }
+```yaml
+- hosts: ospf-routers
+  vars:
+    quagga_ospfd:
+      router_id: 1.1.1.1
+      networks:
+        - prefix: 192.168.29.0/24
+          area: 0
+  roles:
+    - { role: dselders.quagga }
+```
 
 ## Testing
 
