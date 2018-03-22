@@ -35,6 +35,10 @@ quagga_ospfd:
       bandwidth: 100000
       hello_timer: 5
       dead_timer: 20
+      md5_auth
+      auth:
+        - key_id: 1
+          md5_key: "Quagga_OSPF"
 ```
 
 The `quagga_ospfd` hash will contain the information needed configure OSPF on a host.  The `router_id` is the OSPF router-id for the host.  Optionally OSPF can originate a default route.  When `originate_default` is defined a default will be originated.  If you want a default even if there is no default in the route table you may set `originate_default` to always.
@@ -42,6 +46,8 @@ The `quagga_ospfd` hash will contain the information needed configure OSPF on a 
 The `networks` key contains a list of `prefix` and `area` that will be advertised via OSPF.  The interfaces matching the given prefix will have OSPF enabled on them.  OSPF will send out hello packets and form neighbor relationships over these interfaces.
 
 The `interfaces` key contains optional config items in a list.  The `name` is required to set either `passive` or `cost`.  The `passive` key is not required and is to allow the setting of an interface as passive.  The `bandwidth` key allows for correcting interface bandwidth, in order to have an accurate OSPF cost calculation.  This number is the interface bandwidth in kilobits per second.  The hello timer can be changed via the `hello_timer`.  The time is given in seconds, and the Quagga default is 10 seconds.  The dead timer can be changed via the `dead_timer`.  The time is given in seconds, and the Quagga default is 40 seconds.
+
+Authorization contained witin `interfaces` allows for the use of MD5 authentication on interfaces.  The `key_id` allows for the use of multiple keys to gracefully change the keys in a given network segment.
 
 ## Dependencies
 

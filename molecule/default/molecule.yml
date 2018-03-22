@@ -44,6 +44,9 @@ provisioner:
               bandwidth: 1000000
               hello_timer: 5
               dead_timer: 20
+              auth:
+                - key_id: 1
+                  md5_key: "Quagga_OSPF"
   lint:
     name: ansible-lint
 scenario:

@@ -15,6 +15,12 @@ interface {{ interface.name }}
 {% if interface.dead_timer is defined %}
   ip ospf dead-interval {{ interface.dead_timer }}
 {% endif %}
+{% if interface.auth is defined %}
+  ip ospf authentication message-digest
+  {% for item in interface.auth %}
+  ip ospf message-digest-key {{ item.key_id }} md5 {{ item.md5_key }}
+  {% endfor %}
+{% endif %}
 {% endfor %}
 {% endif %}
 !
