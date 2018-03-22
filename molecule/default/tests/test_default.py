@@ -1,9 +1,15 @@
 import os
 
 import testinfra.utils.ansible_runner
+from pytest import fixture
 
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
+
+
+@fixture()
+def AnsibleVars(host):
+    return host.ansible.get_variables()
 
 
 def test_quagga_is_installed(host):
@@ -47,42 +53,68 @@ def test_ospfd_is_listening(host):
     assert ospfd_socket.is_listening
 
 
-def test_ospfd_router_id_is_set(host):
+def test_ospfd_router_id_is_set(host, AnsibleVars):
     router_id = host.run("vtysh -c 'sh run' | grep 'ospf router-id'")
+    given_router_id = AnsibleVars['quagga_ospf']['router_id']
 
-    assert router_id.stdout == " ospf router-id 1.1.1.1"
-
-
-def test_ospfd_network_is_advertised(host):
-    network = host.run("vtysh -c 'sh run' | grep 'network 192.168.29.0'")
-
-    assert network.stdout == " network 192.168.29.0/24 area 0.0.0.0"
+    assert router_id.stdout == " ospf router-id " + str(given_router_id)
 
 
-def test_ospfd_lo0_is_passive(host):
-    passive_intf = host.run("vtysh -c 'sh run' | grep 'passive-interface lo0'")
+def test_ospfd_network_is_advertised(host, AnsibleVars):
+    for item in AnsibleVars['quagga_ospf']['networks']:
+        network_addr = item['prefix']
+        area = str(item['area'])
+        run_cmd = "vtysh -c 'sh run' | grep 'network " + network_addr + "'"
+        network = host.run(run_cmd)
 
-    assert passive_intf.stdout == " passive-interface lo0"
-
-
-def test_ospfd_eth1_bw_is_set(host):
-    eth1_bw = host.run("vtysh -c 'sh int eth1' | grep bandwidth")
-
-    assert eth1_bw.stdout == "  bandwidth 1000000 kbps"
-
-
-def test_ospfd_hello_timer_is_set(host):
-    hello_timer = host.run("vtysh -c 'sh ip ospf int eth1' |\
-            grep 'Timer intervals configured' | awk -F, '{print $2}'")
-
-    assert hello_timer.stdout == " Hello 5s"
+        assert network.stdout == " network " + network_addr + " area 0.0.0." +\
+            area
 
 
-def test_ospfd_dead_timer_is_set(host):
-    dead_timer = host.run("vtysh -c 'sh ip ospf int eth1' |\
-            grep 'Timer intervals configured' | awk -F, '{print $3}'")
+def test_ospfd_lo0_is_passive(host, AnsibleVars):
+    for item in AnsibleVars['quagga_ospf']['interfaces']:
+        if 'passive' in item.keys():
+            intf = item['name']
+            run_cmd = "vtysh -c 'sh run' | grep 'passive-interface " +\
+                intf + "'"
+            passive_intf = host.run(run_cmd)
 
-    assert dead_timer.stdout == " Dead 20s"
+            assert passive_intf.stdout == " passive-interface " + intf
+
+
+def test_ospfd_eth1_bw_is_set(host, AnsibleVars):
+    for item in AnsibleVars['quagga_ospf']['interfaces']:
+        if 'bandwidth' in item.keys():
+            intf = item['name']
+            bandwidth = str(item['bandwidth'])
+            run_cmd = "vtysh -c 'sh int " + intf + "' | grep bandwidth"
+            reported_bw = host.run(run_cmd)
+
+            assert reported_bw.stdout == "  bandwidth " + bandwidth + " kbps"
+
+
+def test_ospfd_hello_timer_is_set(host, AnsibleVars):
+    for item in AnsibleVars['quagga_ospf']['interfaces']:
+        if 'hello_timer' in item.keys():
+            intf = item['name']
+            hello = str(item['hello_timer'])
+            run_cmd = "vtysh -c 'sh ip ospf int " + intf + "' |\
+                grep 'Timer intervals configured' | awk -F, '{print $2}'"
+            reported_hello = host.run(run_cmd)
+
+            assert reported_hello.stdout == " Hello " + hello + "s"
+
+
+def test_ospfd_dead_timer_is_set(host, AnsibleVars):
+    for item in AnsibleVars['quagga_ospf']['interfaces']:
+        if 'dead_timer' in item.keys():
+            intf = item['name']
+            dead = str(item['dead_timer'])
+            run_cmd = "vtysh -c 'sh ip ospf int " + intf + "' |\
+                grep 'Timer intervals configured' | awk -F, '{print $3}'"
+            reported_dead = host.run(run_cmd)
+
+            assert reported_dead.stdout == " Dead " + dead + "s"
 
 
 def test_osfpd_default_information_originate_is_set(host):
