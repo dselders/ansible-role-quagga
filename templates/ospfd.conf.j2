@@ -39,7 +39,7 @@ router ospf
   {% endfor %}
   {% if quagga_ospf.interfaces is defined %}
   {% for interface in quagga_ospf.interfaces %}
-  {% if interface.passive is defined and interface.passive == "True" %}
+  {% if interface.passive | default(false) %}
   passive-interface {{ interface.name }}
   {% endif %}
   {% endfor %}
