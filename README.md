@@ -16,7 +16,7 @@ quagga_vtysh_password: zebra
 quagga_zebra_log: /var/log/quagga/zebra.log
 quagga_ospfd_log: /var/log/quagga/ospfd.log
 quagga_ospfd_log_precision: 0
-quagga_ospfd_enabled: "False"
+quagga_ospfd_enabled: false
 quagga_ospfd_reference_bw: 100
 ```
 
@@ -34,7 +34,7 @@ quagga_ospfd:
       area: 0
   interfaces:
     - name: eth0
-      passive: "True"
+      passive: true
     - name: eth1
       bandwidth: 100000
       hello_timer: 5
