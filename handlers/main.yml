@@ -1,2 +1,7 @@
 ---
-# handlers file for dselders.quagga
+- name: Restart quagga
+  become: "True"
+  service:
+    name: quagga
+    state: restarted
+    enabled: "yes"

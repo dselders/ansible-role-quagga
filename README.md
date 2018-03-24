@@ -1,38 +1,109 @@
-Role Name
-=========
+# Ansible Role: Quagga
 
 A brief description of the role goes here.
 
-Requirements
-------------
+## Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+None
 
-Role Variables
---------------
+## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Available variables are listed below, with their default values (see
+`defaults/main.yml`)
 
-Dependencies
-------------
+```yaml
+quagga_vtysh_password: zebra
+quagga_zebra_log: /var/log/quagga/zebra.log
+quagga_ospf_log: /var/log/quagga/ospfd.log
+quagga_ospf_log_precision: 0
+quagga_ospf_enabled: false
+quagga_ospf_reference_bw: 100  # in megabits per second
+```
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Only the Zebra daemon is eanbled by default within the role.  To enable OSPF
+set `quagga_osfp_enabled` to `True`.  The default logging locations can be
+overriden.  The default precision for both Zebra and OSPF is set to the quagga
+default.  The OSPF reference bandwidth is configured to the default of 100mbit.
 
-Example Playbook
-----------------
+```yaml
+quagga_ospf:
+  router_id: 192.168.29.1
+  originate_default: true
+  networks:
+    - prefix: 192.168.29.0/24
+      area: 0
+  interfaces:
+    - name: eth0
+      passive: true
+    - name: eth1
+      bandwidth: 100000  # in kilobits per second
+      hello_timer: 5
+      dead_timer: 20
+      auth:
+        - key_id: 1
+          md5_key: "Quagga_OSPF"
+```
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+The `quagga_ospf` hash will contain the information needed configure OSPF on a
+host.  The `router_id` is the OSPF router-id for the host.  Optionally OSPF can
+originate a default route.  When `originate_default` is defined a default will
+be originated.  If you want a default even if there is no default in the route
+table you may set `originate_default` to always.
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+The `networks` key contains a list of `prefix` and `area` that will be
+advertised via OSPF.  The interfaces matching the given prefix will have OSPF
+enabled on them.  OSPF will send out hello packets and form neighbor
+relationships over these interfaces.
 
-License
--------
+The `interfaces` key contains optional config items in a list.  The `name` is
+required to set either `passive` or `cost`.  The `passive` key is not required
+and is to allow the setting of an interface as passive.  The `bandwidth` key
+allows for correcting interface bandwidth, in order to have an accurate OSPF
+cost calculation.  This number is the interface bandwidth in kilobits per
+second.  The hello timer can be changed via the `hello_timer`.  The time is
+given in seconds, and the Quagga default is 10 seconds.  The dead timer can be
+changed via the `dead_timer`.  The time is given in seconds, and the Quagga
+default is 40 seconds.
+
+Authorization contained witin `interfaces` allows for the use of MD5
+authentication on interfaces.  The `key_id` allows for the use of multiple keys
+to gracefully change the keys in a given network segment.
+
+## Dependencies
+
+None
+
+## Example Playbook
+
+```yaml
+- hosts: ospf-routers
+  vars:
+    quagga_ospf:
+      router_id: 1.1.1.1
+      networks:
+        - prefix: 192.168.29.0/24
+          area: 0
+  roles:
+    - { role: dselders.quagga }
+```
+
+## Testing
+
+This role has been developed using
+[molecule](https://molecule.readthedocs.io/en/latest/) to drive testing.  To run
+the default scenario:
+
+        molecule test
+
+When this is run molecule will lint, syntax check, apply the role, check for
+idempotence, and finally verify that all tests pass.  The tests can be found int
+`molecule/default/tests`.  Molecule does allow for lint, syntax checking,
+applying the role, and verifying individually as well.
+
+## License
 
 BSD
 
-Author Information
-------------------
+## Author Information
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Created by [David Selders](https://github.com/dselders)

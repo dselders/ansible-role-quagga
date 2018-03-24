@@ -1,0 +1,52 @@
+#jinja2:lstrip_blocks: True
+! /etc/quagga/ospfd.conf
+!
+! {{ ansible_managed }}
+!
+hostname {{ inventory_hostname }}
+!
+{% if quagga_ospf.interfaces is defined %}
+{% for interface in quagga_ospf.interfaces %}
+!
+interface {{ interface.name }}
+{% if interface.hello_timer is defined %}
+  ip ospf hello-interval {{ interface.hello_timer }}
+{% endif %}
+{% if interface.dead_timer is defined %}
+  ip ospf dead-interval {{ interface.dead_timer }}
+{% endif %}
+{% if interface.auth is defined %}
+  ip ospf authentication message-digest
+  {% for item in interface.auth %}
+  ip ospf message-digest-key {{ item.key_id }} md5 {{ item.md5_key }}
+  {% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+!
+{% if quagga_ospf is defined %}
+router ospf
+  log-adjacency-changes detail
+  auto-cost reference-bandwidth {{ quagga_ospf_reference_bw }}
+  ospf router-id {{ quagga_ospf.router_id }}
+  {% if quagga_ospf.originate_default is defined and quagga_ospf.originate_default == 'always' %}
+  default-information originate always
+  {% else %}
+  default-information originate
+  {% endif %}
+  {% for network in quagga_ospf.networks %}
+  network {{ network.prefix }} area {{ network.area }}
+  {% endfor %}
+  {% if quagga_ospf.interfaces is defined %}
+  {% for interface in quagga_ospf.interfaces %}
+  {% if interface.passive | default(false) %}
+  passive-interface {{ interface.name }}
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+{% endif %}
+!
+log file {{ quagga_ospf_log }}
+log timestamp precision {{ quagga_ospf_log_precision }}
+!
+line vty

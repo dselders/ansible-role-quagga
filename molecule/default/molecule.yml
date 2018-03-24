@@ -8,15 +8,53 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: instance
-    box: ubuntu/xenial64
+  - name: r1
+    box: ubuntu/trusty64
+    interfaces:
+      - auto_config: "True"
+        network_name: private_network
+        type: static
+        ip: 192.168.29.11
+    groups:
+      - ospf
 provisioner:
   name: ansible
+  inventory:
+    group_vars:
+      ospf:
+        quagga_vtysh_password: blah
+        quagga_zebra_log_precision: 6
+        quagga_ospf_enabled: "True"
+        quagga_ospf_reference_bw: 100000
+        quagga_ospf_log_precision: 6
+    host_vars:
+      r1:
+        quagga_ospf:
+          router_id: 1.1.1.1
+          originate_default: true
+          networks:
+            - prefix: 192.168.29.0/24
+              area: 0
+            - prefix: 1.1.1.1/32
+              area: 0
+          interfaces:
+            - name: lo0
+              passive: "True"
+            - name: eth1
+              bandwidth: 1000000
+              hello_timer: 5
+              dead_timer: 20
+              auth:
+                - key_id: 1
+                  md5_key: "Quagga_OSPF"
   lint:
     name: ansible-lint
 scenario:
   name: default
 verifier:
   name: testinfra
+  options:
+    v: true
+    sudo: true
   lint:
     name: flake8

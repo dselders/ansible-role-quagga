@@ -47,6 +47,7 @@ PyNaCl==1.2.1
 pytest==3.4.2
 python-dateutil==2.7.0
 python-gilt==1.1.0
+python-vagrant==0.5.15
 PyYAML==3.12
 sh==1.12.14
 six==1.11.0
