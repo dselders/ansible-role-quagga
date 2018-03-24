@@ -17,7 +17,7 @@ quagga_zebra_log: /var/log/quagga/zebra.log
 quagga_ospfd_log: /var/log/quagga/ospfd.log
 quagga_ospfd_log_precision: 0
 quagga_ospfd_enabled: false
-quagga_ospfd_reference_bw: 100
+quagga_ospfd_reference_bw: 100  # in megabits per second
 ```
 
 Only the zebdra daemon is eanbled by default within the role.  To enable ospfd
@@ -36,7 +36,7 @@ quagga_ospfd:
     - name: eth0
       passive: true
     - name: eth1
-      bandwidth: 100000
+      bandwidth: 100000  # in kilobits per second
       hello_timer: 5
       dead_timer: 20
       auth:
