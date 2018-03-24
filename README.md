@@ -14,19 +14,19 @@ Available variables are listed below, with their default values (see
 ```yaml
 quagga_vtysh_password: zebra
 quagga_zebra_log: /var/log/quagga/zebra.log
-quagga_ospfd_log: /var/log/quagga/ospfd.log
-quagga_ospfd_log_precision: 0
-quagga_ospfd_enabled: false
-quagga_ospfd_reference_bw: 100  # in megabits per second
+quagga_ospf_log: /var/log/quagga/ospfd.log
+quagga_ospf_log_precision: 0
+quagga_ospf_enabled: false
+quagga_ospf_reference_bw: 100  # in megabits per second
 ```
 
-Only the zebdra daemon is eanbled by default within the role.  To enable ospfd
-set `quagga_osfpd_enabled` to `True`.  The default logging locations can be
-overriden.  The default precision for both zebra and ospfd is set to the quagga
+Only the Zebra daemon is eanbled by default within the role.  To enable OSPF
+set `quagga_osfp_enabled` to `True`.  The default logging locations can be
+overriden.  The default precision for both Zebra and OSPF is set to the quagga
 default.  The OSPF reference bandwidth is configured to the default of 100mbit.
 
 ```yaml
-quagga_ospfd:
+quagga_ospf:
   router_id: 192.168.29.1
   originate_default: true
   networks:
@@ -44,7 +44,7 @@ quagga_ospfd:
           md5_key: "Quagga_OSPF"
 ```
 
-The `quagga_ospfd` hash will contain the information needed configure OSPF on a
+The `quagga_ospf` hash will contain the information needed configure OSPF on a
 host.  The `router_id` is the OSPF router-id for the host.  Optionally OSPF can
 originate a default route.  When `originate_default` is defined a default will
 be originated.  If you want a default even if there is no default in the route
@@ -78,7 +78,7 @@ None
 ```yaml
 - hosts: ospf-routers
   vars:
-    quagga_ospfd:
+    quagga_ospf:
       router_id: 1.1.1.1
       networks:
         - prefix: 192.168.29.0/24

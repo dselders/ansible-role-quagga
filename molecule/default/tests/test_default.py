@@ -27,7 +27,7 @@ def test_zebra_is_enabled(host):
     assert daemons.contains("^zebra=yes$")
 
 
-def test_ospfd_is_enabled(host):
+def test_ospf_is_enabled(host):
     daemons = host.file("/etc/quagga/daemons")
 
     assert daemons.is_file
@@ -47,20 +47,20 @@ def test_zebra_is_listening(host):
     assert zebra_socket.is_listening
 
 
-def test_ospfd_is_listening(host):
-    ospfd_socket = host.socket("tcp://127.0.0.1:2604")
+def test_ospf_is_listening(host):
+    ospf_socket = host.socket("tcp://127.0.0.1:2604")
 
-    assert ospfd_socket.is_listening
+    assert ospf_socket.is_listening
 
 
-def test_ospfd_router_id_is_set(host, AnsibleVars):
+def test_ospf_router_id_is_set(host, AnsibleVars):
     router_id = host.run("vtysh -c 'sh run' | grep 'ospf router-id'")
     given_router_id = AnsibleVars['quagga_ospf']['router_id']
 
     assert router_id.stdout == " ospf router-id " + str(given_router_id)
 
 
-def test_ospfd_network_is_advertised(host, AnsibleVars):
+def test_ospf_network_is_advertised(host, AnsibleVars):
     for item in AnsibleVars['quagga_ospf']['networks']:
         network_addr = item['prefix']
         area = str(item['area'])
@@ -71,7 +71,7 @@ def test_ospfd_network_is_advertised(host, AnsibleVars):
             area
 
 
-def test_ospfd_lo0_is_passive(host, AnsibleVars):
+def test_ospf_lo0_is_passive(host, AnsibleVars):
     for item in AnsibleVars['quagga_ospf']['interfaces']:
         if 'passive' in item.keys():
             intf = item['name']
@@ -82,7 +82,7 @@ def test_ospfd_lo0_is_passive(host, AnsibleVars):
             assert passive_intf.stdout == " passive-interface " + intf
 
 
-def test_ospfd_eth1_bw_is_set(host, AnsibleVars):
+def test_ospf_eth1_bw_is_set(host, AnsibleVars):
     for item in AnsibleVars['quagga_ospf']['interfaces']:
         if 'bandwidth' in item.keys():
             intf = item['name']
@@ -93,7 +93,7 @@ def test_ospfd_eth1_bw_is_set(host, AnsibleVars):
             assert reported_bw.stdout == "  bandwidth " + bandwidth + " kbps"
 
 
-def test_ospfd_hello_timer_is_set(host, AnsibleVars):
+def test_ospf_hello_timer_is_set(host, AnsibleVars):
     for item in AnsibleVars['quagga_ospf']['interfaces']:
         if 'hello_timer' in item.keys():
             intf = item['name']
@@ -105,7 +105,7 @@ def test_ospfd_hello_timer_is_set(host, AnsibleVars):
             assert reported_hello.stdout == " Hello " + hello + "s"
 
 
-def test_ospfd_dead_timer_is_set(host, AnsibleVars):
+def test_ospf_dead_timer_is_set(host, AnsibleVars):
     for item in AnsibleVars['quagga_ospf']['interfaces']:
         if 'dead_timer' in item.keys():
             intf = item['name']

@@ -24,9 +24,9 @@ provisioner:
       ospf:
         quagga_vtysh_password: blah
         quagga_zebra_log_precision: 6
-        quagga_ospfd_enabled: "True"
+        quagga_ospf_enabled: "True"
         quagga_ospf_reference_bw: 100000
-        quagga_ospfd_log_precision: 6
+        quagga_ospf_log_precision: 6
     host_vars:
       r1:
         quagga_ospf:

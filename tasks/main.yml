@@ -37,16 +37,16 @@
     path: /etc/quagga/daemons
     regexp: '^ospfd=no\s+'
     state: absent
-  when: quagga_ospfd_enabled
+  when: quagga_ospf_enabled
 
-- name: Enable ospfd daemon
+- name: Enable ospf daemon
   become: "True"
   lineinfile:
     path: /etc/quagga/daemons
     line: 'ospfd=yes'
     insertafter: '^bgpd=no|bgpd=yes'
     state: present
-  when: quagga_ospfd_enabled
+  when: quagga_ospf_enabled
   notify: Restart quagga
 
 - name: ospfd.conf
