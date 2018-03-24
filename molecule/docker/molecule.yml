@@ -1,0 +1,57 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+platforms:
+  - name: ubuntu-trusty
+    image: ubuntu:trusty
+    privileged: true
+    networks:
+      - name: Testing
+        ipv4_address: 192.168.29.11
+    groups:
+      - ospf
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      ospf:
+        quagga_vtysh_password: blah
+        quagga_zebra_log_precision: 6
+        quagga_ospf_enabled: "True"
+        quagga_ospf_reference_bw: 100000
+        quagga_ospf_log_precision: 6
+    host_vars:
+      ubuntu-trusty:
+        quagga_ospf:
+          router_id: 1.1.1.1
+          originate_default: true
+          networks:
+            - prefix: 192.168.29.0/24
+              area: 0
+            - prefix: 1.1.1.1/32
+              area: 0
+          interfaces:
+            - name: lo0
+              passive: "True"
+            - name: eth0
+              bandwidth: 1000000
+              hello_timer: 5
+              dead_timer: 20
+              auth:
+                - key_id: 1
+                  md5_key: "Quagga_OSPF"
+  lint:
+    name: ansible-lint
+scenario:
+  name: docker
+verifier:
+  name: testinfra
+  options:
+    v: true
+    sudo: true
+  lint:
+    name: flake8
