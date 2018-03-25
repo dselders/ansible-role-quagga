@@ -6,6 +6,8 @@ services:
 install:
   - pip install -r requirements.txt
 script:
+  - molecule --version
+  - ansible --version
   - molecule test -s docker
 notifications:
   slack:
