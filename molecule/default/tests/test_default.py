@@ -82,7 +82,7 @@ def test_ospf_lo0_is_passive(host, AnsibleVars):
             assert passive_intf.stdout == " passive-interface " + intf
 
 
-def test_ospf_eth1_bw_is_set(host, AnsibleVars):
+def test_ospf_eth0_bw_is_set(host, AnsibleVars):
     for item in AnsibleVars['quagga_ospf']['interfaces']:
         if 'bandwidth' in item.keys():
             intf = item['name']
