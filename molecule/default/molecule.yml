@@ -2,19 +2,16 @@
 dependency:
   name: galaxy
 driver:
-  name: vagrant
-  provider:
-    name: virtualbox
+  name: docker
 lint:
   name: yamllint
 platforms:
-  - name: r1
-    box: ubuntu/trusty64
-    interfaces:
-      - auto_config: "True"
-        network_name: private_network
-        type: static
-        ip: 192.168.29.11
+  - name: ubuntu-trusty
+    image: ubuntu:trusty
+    privileged: true
+    networks:
+      - name: Testing
+        ipv4_address: 192.168.29.11
     groups:
       - ospf
 provisioner:
@@ -28,7 +25,7 @@ provisioner:
         quagga_ospf_reference_bw: 100000
         quagga_ospf_log_precision: 6
     host_vars:
-      r1:
+      ubuntu-trusty:
         quagga_ospf:
           router_id: 1.1.1.1
           originate_default: true
@@ -40,7 +37,7 @@ provisioner:
           interfaces:
             - name: lo0
               passive: "True"
-            - name: eth1
+            - name: eth0
               bandwidth: 1000000
               hello_timer: 5
               dead_timer: 20
