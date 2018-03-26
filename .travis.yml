@@ -8,7 +8,8 @@ install:
 script:
   - molecule --version
   - ansible --version
-  - molecule test -s docker
+  - molecule test
 notifications:
+  email: false
   slack:
     secure: VpCKBLVQEk/udOfmxxDFq0jRHbOEPUGUBIuui2Ht/hpLQoJd5fHZuX26JGDA+feRndDSQTntuKTtxcS8WKC0Unzkl3JHRfPFDC48T1Tk58EMyfJUG95Sr7ckYg9eV6L4aoA24SbvhjjFHiqJDYb+075POUxAVroKtJcV9YKEa7ktcylYbrIGaIVAbbCue23+srlYBIVjl17meGnXb/xrvu+bQagNk4dbC1XzZ+G239K/XJ+hNBof9KpvLVAu01fmNmi/W7yNnPPmS211KLrkCBIJvR42HlOQfVBmfvh1MN+mbgBVGWFmAWCr5s3dr0Me4JFRmnv6HF3rdku/4eYQWFTkiqzAIm9aSkR6Vh//6hDo9jFndQyJbQpBO5uEV5qAz2qxtKnxIvXCdCVWABUUMqLitYlqxOHkBzeSmTWM8WowVrratRmaNAgehJoe4RSc4zcHY1xDzzlNgMHrVxJ+IuQ3hQtaYARC0XEHpiNwrO6Ivb5es549BHOWlEoeMN9a5xoxQIxVX5mxiF5W6WSSQ5gApA4DEBudiQVKH8S6M+2Px9UE1fEQvzL+9cKUVs04c9Pbk+0cbNwp7UGubR0AdL7E20lsBauOZcDS5cFeplgebuFqVVsK+8daI5rFzmaVc8IemzKN6bQekYyNeq32jPxmYGskNOVxr7pPyPs+xlA=

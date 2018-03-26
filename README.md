@@ -1,5 +1,7 @@
 # Ansible Role: Quagga
 
+[![Build Status](https://travis-ci.org/dselders/ansible-role-quagga.svg?branch=master)](https://travis-ci.org/dselders/ansible-role-quagga)
+
 A brief description of the role goes here.
 
 ## Requirements
