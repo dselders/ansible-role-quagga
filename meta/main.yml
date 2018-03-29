@@ -4,9 +4,12 @@ galaxy_info:
   description: "Manage Quagga (OSPF)"
   license: BSD
   min_ansible_version: 2.4
-platforms:
-  - name: Ubuntu
-    versions:
-      - trusty
-galaxy_tags: [networking, network, system]
+  platforms:
+    - name: Ubuntu
+      versions:
+        - trusty
+  galaxy_tags:
+    - networking
+    - network
+    - system
 dependencies: []
