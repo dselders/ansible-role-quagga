@@ -28,8 +28,14 @@ overriden.  The default precision for both Zebra and OSPF is set to the quagga
 default.  The OSPF reference bandwidth is configured to the default of 100mbit.
 
 ```yaml
+quagga_router_id: 192.168.29.1
+```
+
+The `quagga_router_id` is the router-id for the host when using either BGP or
+OSPF.
+
+```yaml
 quagga_ospf:
-  router_id: 192.168.29.1
   originate_default: true
   networks:
     - prefix: 192.168.29.0/24
@@ -47,10 +53,9 @@ quagga_ospf:
 ```
 
 The `quagga_ospf` hash will contain the information needed configure OSPF on a
-host.  The `router_id` is the OSPF router-id for the host.  Optionally OSPF can
-originate a default route.  When `originate_default` is defined a default will
-be originated.  If you want a default even if there is no default in the route
-table you may set `originate_default` to always.
+host.  Optionally OSPF can originate a default route.  When `originate_default`
+is defined a default will be originated.  If you want a default even if there is
+no default in the route table you may set `originate_default` to always.
 
 The `networks` key contains a list of `prefix` and `area` that will be
 advertised via OSPF.  The interfaces matching the given prefix will have OSPF
@@ -70,6 +75,18 @@ default is 40 seconds.
 Authorization contained witin `interfaces` allows for the use of MD5
 authentication on interfaces.  The `key_id` allows for the use of multiple keys
 to gracefully change the keys in a given network segment.
+
+```yaml
+quagga_bgp:
+  asn: 65000
+  networks:
+    - 192.168.0.0/16
+  neighbors:
+    - address: 10.10.10.10
+      asn: 65001
+      ebgp_multihop: true
+      next_hop_self: true
+```
 
 ## Dependencies
 
