@@ -1,0 +1,26 @@
+---
+- name: Remove bgpd=no in daemons file
+  become: "True"
+  lineinfile:
+    path: /etc/quagga/daemons
+    regexp: '^bgpd=no\s+'
+    state: absent
+
+- name: Enable BGP daemon
+  become: "True"
+  lineinfile:
+    path: /etc/quagga/daemons
+    line: 'bgpd=yes'
+    insertbefore: '^ospfd=no|ospfd=yes'
+    state: present
+  notify: Restart quagga
+
+- name: bgpd.conf
+  become: "True"
+  template:
+    src: bgpd.conf.j2
+    dest: /etc/quagga/bgpd.conf
+    owner: quagga
+    group: quagga
+    mode: 0640
+  notify: Restart quagga

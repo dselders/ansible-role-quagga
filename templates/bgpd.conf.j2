@@ -1,0 +1,21 @@
+#jinja2:lstrip_blocks: True
+! /etc/quagga/bgpd.conf
+!
+! {{ ansible_managed }}
+!
+router bgp {{ quagga_bgp.asn }}
+  bgp router-id {{ quagga_router_id }}
+  {% if quagga_bgp.networks is defined %}
+  {% for network in quagga_bgp.networks %}
+  network {{ network }}
+  {% endfor %}
+  {% endif %}
+  {% for neighbor in quagga_bgp.neighbors %}
+  neighbor {{ neighbor.address }} remote-as {{ neighbor.asn }}
+  {% if neighbor.ebgp_multihop | default(false) %}
+  neighbor {{ neighbor.address }} ebgp-multihop
+  {% endif %}
+  {% if neighbor.next_hop_self | default(false) %}
+  neighbor {{ neighbor.address }} next-hop-self
+  {% endif %}
+  {% endfor %}

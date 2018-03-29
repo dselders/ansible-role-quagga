@@ -26,8 +26,17 @@ provisioner:
         quagga_ospf_log_precision: 6
     host_vars:
       ubuntu-trusty:
+        quagga_router_id: 1.1.1.1
+        quagga_bgp:
+          asn: 65000
+          networks:
+            - 192.168.0.0/16
+          neighbors:
+            - address: 10.10.10.10
+              asn: 65001
+              ebgp_multihop: true
+              next_hop_self: true
         quagga_ospf:
-          router_id: 1.1.1.1
           originate_default: true
           networks:
             - prefix: 192.168.29.0/24
