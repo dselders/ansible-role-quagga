@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/dselders/ansible-role-quagga.svg?branch=master)](https://travis-ci.org/dselders/ansible-role-quagga)
 
-A brief description of the role goes here.
+A role to manage [Quagga][] configuration.
 
 ## Requirements
 
@@ -72,7 +72,7 @@ given in seconds, and the Quagga default is 10 seconds.  The dead timer can be
 changed via the `dead_timer`.  The time is given in seconds, and the Quagga
 default is 40 seconds.
 
-Authorization contained witin `interfaces` allows for the use of MD5
+Authorization contained within `interfaces` allows for the use of MD5
 authentication on interfaces.  The `key_id` allows for the use of multiple keys
 to gracefully change the keys in a given network segment.
 
@@ -102,8 +102,8 @@ None
 ```yaml
 - hosts: ospf-routers
   vars:
+    quagga_router_id: 1.1.1.1
     quagga_ospf:
-      router_id: 1.1.1.1
       networks:
         - prefix: 192.168.29.0/24
           area: 0
@@ -113,8 +113,7 @@ None
 
 ## Testing
 
-This role has been developed using
-[molecule](https://molecule.readthedocs.io/en/latest/) to drive testing.  To run
+This role has been developed using [molecule][] to drive testing.  To run
 the default scenario:
 
         molecule test
@@ -130,4 +129,8 @@ BSD
 
 ## Author Information
 
-Created by [David Selders](https://github.com/dselders)
+Created by [David Selders][]
+
+[quagga]: https://www.nongnu.org/quagga/
+[molecule]: https://molecule.readthedocs.io/en/latest/
+[David Selders]: https://github.com/dselders
