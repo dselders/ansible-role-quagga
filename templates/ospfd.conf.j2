@@ -28,7 +28,7 @@ interface {{ interface.name }}
 router ospf
   log-adjacency-changes detail
   auto-cost reference-bandwidth {{ quagga_ospf_reference_bw }}
-  ospf router-id {{ quagga_ospf.router_id }}
+  ospf router-id {{ quagga_router_id }}
   {% if quagga_ospf.originate_default is defined and quagga_ospf.originate_default == 'always' %}
   default-information originate always
   {% else %}

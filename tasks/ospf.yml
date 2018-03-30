@@ -1,0 +1,28 @@
+---
+- name: Remove ospfd=no in daemons file
+  become: "True"
+  lineinfile:
+    path: /etc/quagga/daemons
+    regexp: '^ospfd=no\s+'
+    state: absent
+  when: quagga_ospf_enabled
+
+- name: Enable ospf daemon
+  become: "True"
+  lineinfile:
+    path: /etc/quagga/daemons
+    line: 'ospfd=yes'
+    insertafter: '^bgpd=no|bgpd=yes'
+    state: present
+  when: quagga_ospf_enabled
+  notify: Restart quagga
+
+- name: ospfd.conf
+  become: "True"
+  template:
+    src: ospfd.conf.j2
+    dest: /etc/quagga/ospfd.conf
+    owner: quagga
+    group: quagga
+    mode: 0640
+  notify: Restart quagga
