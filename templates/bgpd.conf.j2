@@ -3,15 +3,18 @@
 !
 ! {{ ansible_managed }}
 !
+bgp multiple-instance
+!
 router bgp {{ quagga_bgp.asn }}
   bgp router-id {{ quagga_router_id }}
+  bgp graceful-restart
+  bgp log-neighbor-changes
   {% if quagga_bgp.networks is defined %}
   {% for network in quagga_bgp.networks %}
   network {{ network }}
   {% endfor %}
   {% endif %}
   {% for neighbor in quagga_bgp.neighbors|sort(reverse=True) %}
-  neighbor {{ neighbor.peer }} soft-reconfiguration inbound
   {% if neighbor.asn | default(false) %}
   neighbor {{ neighbor.peer }} remote-as {{ neighbor.asn }}
   {% endif %}
@@ -33,4 +36,5 @@ router bgp {{ quagga_bgp.asn }}
   {% if neighbor.update_source | default(false) %}
   neighbor {{ neighbor.peer }} update-source {{ neighbor.update_source }}
   {% endif %}
+  neighbor {{ neighbor.peer }} soft-reconfiguration inbound
   {% endfor %}
