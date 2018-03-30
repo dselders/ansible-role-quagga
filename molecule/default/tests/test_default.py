@@ -173,27 +173,34 @@ def test_bgp_network_is_advertised(host, AnsibleVars):
 
 
 def test_bgp_neighbors_are_configured(host, AnsibleVars):
+    count = 0
     for neighbor in AnsibleVars['quagga_bgp']['neighbors']:
-        address = str(neighbor['address'])
-        asn = str(neighbor['asn'])
-        run_cmd = "vtysh -c 'show run' | grep 'neighbor " + address\
-            + " remote-as " + asn + "'"
-        cmd_out = host.run(run_cmd)
+        if 'asn' in neighbor.keys():
+            count += 1
+            peer = str(neighbor['peer'])
+            asn = str(neighbor['asn'])
+            run_cmd = "vtysh -c 'show run' | grep 'neighbor " + peer\
+                + " remote-as " + asn + "'"
+            cmd_out = host.run(run_cmd)
 
-        assert cmd_out.stdout == " neighbor " + address + " remote-as " + asn
+            assert cmd_out.stdout == " neighbor " + peer + " remote-as " + \
+                asn
+
+    if count == 0:
+        assert count == "FAIL: No neighbors with ASN defined"
 
 
 def test_bgp_neighbor_ebgp_multihop(host, AnsibleVars):
     count = 0
     for neighbor in AnsibleVars['quagga_bgp']['neighbors']:
-        if neighbor['ebgp_multihop']:
+        if 'ebgp_multihop' in neighbor.keys():
             count += 1
-            address = str(neighbor['address'])
-            run_cmd = "vtysh -c 'show run' | grep 'neighbor " + address \
+            peer = str(neighbor['peer'])
+            run_cmd = "vtysh -c 'show run' | grep 'neighbor " + peer \
                 + " ebgp-multihop'"
             cmd_out = host.run(run_cmd)
 
-            assert cmd_out.stdout == " neighbor " + address + \
+            assert cmd_out.stdout == " neighbor " + peer + \
                 " ebgp-multihop 255"
 
     if count == 0:
@@ -203,14 +210,68 @@ def test_bgp_neighbor_ebgp_multihop(host, AnsibleVars):
 def test_bgp_neighbor_next_hop_self(host, AnsibleVars):
     count = 0
     for neighbor in AnsibleVars['quagga_bgp']['neighbors']:
-        if neighbor['next_hop_self']:
+        if 'next_hop_self' in neighbor.keys():
             count += 1
-            address = neighbor['address']
-            run_cmd = "vtysh -c 'sh run' | grep 'neighbor " + address \
+            peer = neighbor['peer']
+            run_cmd = "vtysh -c 'sh run' | grep 'neighbor " + peer \
                 + " next-hop-self'"
             cmd_out = host.run(run_cmd)
 
-            assert cmd_out.stdout == " neighbor " + address + " next-hop-self"
+            assert cmd_out.stdout == " neighbor " + peer + " next-hop-self"
 
     if count == 0:
         assert count == "FAIL: No next-hop-self"
+
+
+def test_bgp_neighbor_description(host, AnsibleVars):
+    count = 0
+    for neighbor in AnsibleVars['quagga_bgp']['neighbors']:
+        if 'description' in neighbor.keys():
+            count += 1
+            peer = neighbor['peer']
+            description = neighbor['description']
+            run_cmd = "vtysh -c 'sh run' | grep 'neighbor " + peer + \
+                " description'"
+            cmd_out = host.run(run_cmd)
+
+            assert cmd_out.stdout == " neighbor " + peer + " description " \
+                + description
+
+    if count == 0:
+        assert count == "FAIL: No neighbor description"
+
+
+def test_bgp_neighbor_update_source(host, AnsibleVars):
+    count = 0
+    for neighbor in AnsibleVars['quagga_bgp']['neighbors']:
+        if 'update_source' in neighbor.keys():
+            count += 1
+            peer = neighbor['peer']
+            update_source = neighbor['update_source']
+            run_cmd = "vtysh -c 'sh run' | grep 'neighbor " + peer + \
+                " update-source " + update_source + "'"
+            cmd_out = host.run(run_cmd)
+
+            assert cmd_out.stdout == " neighbor " + peer + \
+                " update-source " + update_source
+
+    if count == 0:
+        assert count == "FAIL: No update source"
+
+
+def test_bgp_neighbor_peer_group(host, AnsibleVars):
+    for neighbor in AnsibleVars['quagga_bgp']['neighbors']:
+        peer = neighbor['peer']
+        if 'is_peer_group' in neighbor.keys():
+            run_cmd = "vtysh -c 'sh run' | grep 'neighbor " + peer + \
+                " peer-group'"
+            match_output = " neighbor " + peer + " peer-group"
+
+        if 'peer_group' in neighbor.keys():
+            peer_group = neighbor['peer_group']
+            run_cmd = "vtysh -c 'sh run' | grep 'neighbor " + peer + \
+                " peer-group " + peer_group + "'"
+            match_output = " neighbor " + peer + " peer-group " + peer_group
+
+        cmd_out = host.run(run_cmd)
+        assert cmd_out.stdout == match_output

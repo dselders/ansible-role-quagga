@@ -82,10 +82,15 @@ quagga_bgp:
   networks:
     - 192.168.0.0/16
   neighbors:
-    - address: 10.10.10.10
+    - peer: 10.10.10.10
       asn: 65001
+      peer_group: ebgp-peers
+    - peer: ebgp-peers
       ebgp_multihop: true
+      is_peer_group: true
       next_hop_self: true
+      description: "external peers"
+      update_source: 1.1.1.1
 ```
 
 ## Dependencies

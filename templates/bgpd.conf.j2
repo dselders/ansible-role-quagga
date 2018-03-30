@@ -10,12 +10,27 @@ router bgp {{ quagga_bgp.asn }}
   network {{ network }}
   {% endfor %}
   {% endif %}
-  {% for neighbor in quagga_bgp.neighbors %}
-  neighbor {{ neighbor.address }} remote-as {{ neighbor.asn }}
+  {% for neighbor in quagga_bgp.neighbors|sort(reverse=True) %}
+  neighbor {{ neighbor.peer }} soft-reconfiguration inbound
+  {% if neighbor.asn | default(false) %}
+  neighbor {{ neighbor.peer }} remote-as {{ neighbor.asn }}
+  {% endif %}
+  {% if neighbor.is_peer_group | default(false) %}
+  neighbor {{ neighbor.peer }} peer-group
+  {% endif %}
+  {% if neighbor.peer_group | default(false) %}
+  neighbor {{ neighbor.peer }} peer-group {{ neighbor.peer_group }}
+  {% endif %}
+  {% if neighbor.description | default(false) %}
+  neighbor {{ neighbor.peer }} description {{ neighbor.description }}
+  {% endif %}
   {% if neighbor.ebgp_multihop | default(false) %}
-  neighbor {{ neighbor.address }} ebgp-multihop
+  neighbor {{ neighbor.peer }} ebgp-multihop
   {% endif %}
   {% if neighbor.next_hop_self | default(false) %}
-  neighbor {{ neighbor.address }} next-hop-self
+  neighbor {{ neighbor.peer }} next-hop-self
+  {% endif %}
+  {% if neighbor.update_source | default(false) %}
+  neighbor {{ neighbor.peer }} update-source {{ neighbor.update_source }}
   {% endif %}
   {% endfor %}

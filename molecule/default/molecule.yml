@@ -32,8 +32,14 @@ provisioner:
           networks:
             - 192.168.0.0/16
           neighbors:
-            - address: 10.10.10.10
+            - peer: 10.10.10.10
+              description: "external peer 1"
+              peer_group: ebgp-peers
               asn: 65001
+            - peer: ebgp-peers
+              is_peer_group: true
+              description: "eBGP peer group"
+              update_source: 1.1.1.1
               ebgp_multihop: true
               next_hop_self: true
         quagga_ospf:
