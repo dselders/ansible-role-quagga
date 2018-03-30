@@ -3,7 +3,7 @@ galaxy_info:
   author: David Selders
   description: "Manage Quagga (OSPF)"
   license: BSD
-  min_ansible_version: 2.4
+  min_ansible_version: 2.3
   platforms:
     - name: Ubuntu
       versions:
