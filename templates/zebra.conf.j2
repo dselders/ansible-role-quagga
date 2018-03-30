@@ -8,13 +8,15 @@ hostname {{ inventory_hostname }}
 log file {{ quagga_zebra_log }}
 log timestamp precision {{ quagga_zebra_log_precision }}
 !
-{% if quagga_ospf.interfaces is defined %}
+{% if quagga_ospf | default(false) %}
+{% if quagga_ospf.interfaces | default(false) %}
 {% for interface in quagga_ospf.interfaces %}
 {% if interface.bandwidth is defined %}
 interface {{ interface.name }}
   bandwidth {{ interface.bandwidth }}
 {% endif %}
 {% endfor %}
+{% endif %}
 {% endif %}
 !
 line vty
