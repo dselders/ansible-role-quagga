@@ -93,6 +93,13 @@ quagga_bgp:
       update_source: 1.1.1.1
 ```
 
+The `quagga_bgp` hash will contain the information needed to configure BGP on a
+host.  If the variable `quagga_bgp` is not set, then no BGP configuration will
+be configured.  The `asn` sets the autonomous system, `networks` will be
+advertised via BGP.  Peer groups can be defined by placing the peer group name
+in `peer` and setting `is_peer_group` to true.  To have a neighbor use the peer
+group set the peer group name in `peer_group`.
+
 ## Dependencies
 
 None
